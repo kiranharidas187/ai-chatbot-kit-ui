@@ -228,6 +228,11 @@
     animation: ck-pulse 1.6s ease-in-out infinite;
   }
 
+  /* Mic button while recording: soft expanding ring. */
+  .ck-mic-recording {
+    animation: ck-ring 1.5s ease-out infinite;
+  }
+
   /* Blinking caret shown at the end of streaming assistant text. */
   .ck-cursor {
     display: inline-block;
@@ -258,7 +263,8 @@
     .ck-message-enter,
     .ck-cursor,
     .ck-typing-dot,
-    .ck-thinking-active {
+    .ck-thinking-active,
+    .ck-mic-recording {
       animation: none;
     }
   }
@@ -284,6 +290,18 @@
 @keyframes ck-pulse {
   50% {
     opacity: 0.45;
+  }
+}
+
+@keyframes ck-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ck-color-danger) 45%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 

@@ -77,6 +77,7 @@ export { memoryPersistence } from './persistence/memory';
 
 // Speech
 export type { SpeechAdapter, SpeechResult, SpeechStartOptions } from './speech/types';
+export { webSpeechAdapter } from './speech/webSpeech';
 
 // Core domain model
 export type {

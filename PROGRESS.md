@@ -12,7 +12,7 @@
 | M3 | State layer + basic chat UI | ✅ done |
 | M4 | Transport adapters (SSE/WS/HTTP) + mock server | ✅ done |
 | M5 | Multi-session sidebar + persistence | ✅ done |
-| M6 | Markdown, tool-call/thinking rendering, message actions | ⬜ not started |
+| M6 | Markdown, tool-call/thinking rendering, message actions | ✅ done |
 | M7 | Mic / voice input | ⬜ not started |
 | M8 | A11y, responsive, polish | ⬜ not started |
 | M9 | Docs + packaging verification | ⬜ not started |
@@ -62,14 +62,22 @@
   and two-step delete. Verify: `pnpm test` (63 tests); `pnpm dev` → chat, reload, session
   restored; `/?seed=1` proves hydration in one load.
 
+- **M6 rich rendering** — MarkdownContent (react-markdown + remark-gfm +
+  rehype-highlight, feature-gated), token-bound hljs theme (light/dark), collapsible
+  ToolCallItem with input/output JSON, ThinkingDisclosure (live pulse while streaming),
+  MessageActions (copy / regenerate-last / thumbs feedback via `onFeedback` config
+  callback; `useChat().regenerate` added).
+  Verify: `pnpm dev:server` + `pnpm dev` → `/?transport=http&autosend=show markdown`
+  renders code/table; `/?transport=sse&autosend=think and use a tool` shows thinking +
+  tool chip.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M6 — markdown rendering (react-markdown +
-remark-gfm + rehype-highlight, gated by `features.markdown`/`codeHighlighting`),
-expanded tool-call component (collapsible input/output), thinking disclosure on
-assistant messages, message actions (copy/regenerate/feedback per
-`features.messageActions`). Mock server already streams markdown + tool calls +
-thinking ("tool"/"think" prompts) for testing.
+Nothing mid-flight. **Next step:** start M7 — `WebSpeechAdapter` in `src/speech/`
+(webkitSpeechRecognition, isSupported guard), mic button in ChatComposer (pulse while
+recording, interim transcript into the textarea, hidden when unsupported/disabled),
+`features.mic` + `speech.adapter` config already typed. Note for M8 backlog: composer
+attachments UI (features.attachments) still unbuilt; keyboard/ARIA/responsive polish.
 
 ## Open questions / pending user input
 

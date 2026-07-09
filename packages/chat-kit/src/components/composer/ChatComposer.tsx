@@ -1,5 +1,6 @@
-import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
-import { SendIcon, StopIcon } from '../../icons';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { MicIcon, SendIcon, StopIcon } from '../../icons';
+import { webSpeechAdapter } from '../../speech/webSpeech';
 import { useChatKitConfig } from '../../state/ChatKitProvider';
 import { useChat } from '../../state/useChat';
 import { cx } from '../internal/cx';
@@ -10,10 +11,18 @@ export interface ChatComposerProps {
 
 /** Message input: auto-growing textarea, Enter to send, stop while generating. */
 export function ChatComposer({ className }: ChatComposerProps) {
-  const { branding, strings } = useChatKitConfig();
+  const { branding, strings, features, speech } = useChatKitConfig();
   const { sendMessage, stopGenerating, isGenerating } = useChat();
   const [value, setValue] = useState('');
+  const [recording, setRecording] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  // Text present when recording started; the live transcript appends to it.
+  const voiceBaseRef = useRef('');
+
+  const speechAdapter = useMemo(() => speech.adapter ?? webSpeechAdapter(), [speech.adapter]);
+  const micSupported = features.mic && speechAdapter.isSupported();
+
+  useEffect(() => () => speechAdapter.stop(), [speechAdapter]);
 
   const resize = useCallback(() => {
     const el = textareaRef.current;
@@ -36,6 +45,24 @@ export function ChatComposer({ className }: ChatComposerProps) {
       submit();
     }
   };
+
+  const toggleRecording = useCallback(() => {
+    if (recording) {
+      speechAdapter.stop();
+      return; // onEnd flips the state
+    }
+    voiceBaseRef.current = value ? `${value.trimEnd()} ` : '';
+    setRecording(true);
+    speechAdapter.start({
+      lang: speech.lang,
+      onResult: ({ transcript }) => {
+        setValue(voiceBaseRef.current + transcript);
+        requestAnimationFrame(resize);
+      },
+      onError: () => setRecording(false),
+      onEnd: () => setRecording(false),
+    });
+  }, [recording, speechAdapter, speech.lang, value, resize]);
 
   const canSend = value.trim().length > 0 && !isGenerating;
 
@@ -60,6 +87,23 @@ export function ChatComposer({ className }: ChatComposerProps) {
         onKeyDown={onKeyDown}
         className="max-h-48 min-w-0 flex-1 resize-none self-center bg-transparent outline-none placeholder:text-muted-foreground"
       />
+      {micSupported && (
+        <button
+          type="button"
+          onClick={toggleRecording}
+          aria-label={recording ? strings.micStop : strings.micStart}
+          aria-pressed={recording}
+          title={recording ? strings.micStop : strings.micStart}
+          className={cx(
+            'grid size-8 shrink-0 place-items-center rounded-md transition-colors',
+            recording
+              ? 'ck-mic-recording bg-danger text-danger-foreground'
+              : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
+          )}
+        >
+          <MicIcon className="size-4" />
+        </button>
+      )}
       {isGenerating ? (
         <button
           type="button"
