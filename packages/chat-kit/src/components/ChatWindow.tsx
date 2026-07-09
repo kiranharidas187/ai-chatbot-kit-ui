@@ -3,25 +3,37 @@ import { ChatComposer } from './composer/ChatComposer';
 import { ChatKitRoot } from './internal/ChatKitRoot';
 import { cx } from './internal/cx';
 import { ChatMessages } from './messages/ChatMessages';
+import { ChatSidebar } from './sidebar/ChatSidebar';
 
 export interface ChatWindowProps {
   /** Extra classes on the root element, e.g. sizing when embedding in a panel. */
   className?: string | undefined;
   /** Hide the built-in header when the host app provides its own chrome. */
   showHeader?: boolean;
+  /** Hide the multi-session sidebar (e.g. single-conversation widgets). */
+  showSidebar?: boolean;
+  /** Start with the sidebar collapsed. */
+  sidebarDefaultCollapsed?: boolean;
 }
 
 /**
- * Batteries-included chat window: header, message history, composer.
- * The session sidebar joins in M5; compose the exported parts directly
- * (`ChatMessages`, `ChatComposer`) for custom layouts.
+ * Batteries-included chat window: session sidebar, header, message history,
+ * composer. Compose the exported parts directly (`ChatSidebar`,
+ * `ChatMessages`, `ChatComposer`) for custom layouts.
  */
-export function ChatWindow({ className, showHeader = true }: ChatWindowProps) {
+export function ChatWindow({
+  className,
+  showHeader = true,
+  showSidebar = true,
+  sidebarDefaultCollapsed = false,
+}: ChatWindowProps) {
   const { branding } = useChatKitConfig();
 
   return (
-    <ChatKitRoot className={cx('flex h-full w-full flex-col', className)}>
-      {showHeader && (
+    <ChatKitRoot className={cx('flex h-full w-full', className)}>
+      {showSidebar && <ChatSidebar defaultCollapsed={sidebarDefaultCollapsed} />}
+      <div className="flex min-w-0 flex-1 flex-col">
+        {showHeader && (
         <header className="flex items-center gap-3 border-b px-4 py-3">
           {branding.avatarUrl ? (
             <img src={branding.avatarUrl} alt="" className="size-8 rounded-full" />
@@ -35,13 +47,14 @@ export function ChatWindow({ className, showHeader = true }: ChatWindowProps) {
           )}
           <span className="font-semibold">{branding.botName}</span>
         </header>
-      )}
+        )}
 
-      <ChatMessages />
+        <ChatMessages />
 
-      <footer className="mx-auto w-full max-w-3xl px-4 pb-4 pt-2">
-        <ChatComposer />
-      </footer>
+        <footer className="mx-auto w-full max-w-3xl px-4 pb-4 pt-2">
+          <ChatComposer />
+        </footer>
+      </div>
     </ChatKitRoot>
   );
 }

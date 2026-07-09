@@ -10,11 +10,13 @@ import {
 } from 'react';
 import { resolveConfig } from '../config/resolveConfig';
 import type { ChatKitConfig, ResolvedChatKitConfig } from '../config/types';
+import { resolvePersistence } from '../persistence/resolvePersistence';
 import { resolveTransport } from '../transport/resolveTransport';
 import type { TransportAdapter } from '../transport/types';
 import { newId } from '../utils/newId';
 import { chatReducer, emptyChatState } from './chatReducer';
 import type { ChatAction, ChatState } from './types';
+import { usePersistenceSync } from './usePersistenceSync';
 
 const ConfigContext = createContext<ResolvedChatKitConfig | null>(null);
 
@@ -24,6 +26,8 @@ interface ChatKitStore {
   transport: TransportAdapter;
   /** In-flight turn controllers, keyed by session id. */
   aborts: Map<string, AbortController>;
+  /** Lazy-load a session's history from persistence (no-op if already loaded). */
+  ensureMessagesLoaded: (sessionId: string) => void;
 }
 
 const StoreContext = createContext<ChatKitStore | null>(null);
@@ -56,10 +60,22 @@ export function ChatKitProvider({ config, children }: ChatKitProviderProps) {
     initialChatState,
   );
   const transport = useMemo(() => resolveTransport(resolved.transport), [resolved.transport]);
+  const persistence = useMemo(
+    () => resolvePersistence(resolved.sessions.persistence),
+    [resolved.sessions.persistence],
+  );
   const [aborts] = useState(() => new Map<string, AbortController>());
 
+  const { ensureMessagesLoaded } = usePersistenceSync(
+    persistence,
+    state,
+    dispatch,
+    resolved.strings.emptySessionTitle,
+  );
+
   const store = useMemo<ChatKitStore>(
-    () => ({ state, dispatch, transport, aborts }),
+    () => ({ state, dispatch, transport, aborts, ensureMessagesLoaded }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ensureMessagesLoaded is stable in behavior
     [state, transport, aborts],
   );
 

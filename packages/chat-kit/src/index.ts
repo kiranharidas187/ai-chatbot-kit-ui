@@ -10,6 +10,8 @@ export { ChatKitProvider, useChatKitConfig } from './state/ChatKitProvider';
 export type { ChatKitProviderProps } from './state/ChatKitProvider';
 export { useChat } from './state/useChat';
 export type { UseChatResult } from './state/useChat';
+export { useSessions } from './state/useSessions';
+export type { UseSessionsResult } from './state/useSessions';
 
 // Components
 export { ChatWindow } from './components/ChatWindow';
@@ -18,6 +20,8 @@ export { ChatMessages } from './components/messages/ChatMessages';
 export type { ChatMessagesProps } from './components/messages/ChatMessages';
 export { ChatComposer } from './components/composer/ChatComposer';
 export type { ChatComposerProps } from './components/composer/ChatComposer';
+export { ChatSidebar } from './components/sidebar/ChatSidebar';
+export type { ChatSidebarProps } from './components/sidebar/ChatSidebar';
 
 // Built-in transports
 export { createEchoTransport } from './transport/echo';
@@ -67,6 +71,9 @@ export type {
 
 // Persistence
 export type { PersistenceAdapter } from './persistence/types';
+export { localStoragePersistence } from './persistence/localStorage';
+export type { LocalStoragePersistenceOptions } from './persistence/localStorage';
+export { memoryPersistence } from './persistence/memory';
 
 // Speech
 export type { SpeechAdapter, SpeechResult, SpeechStartOptions } from './speech/types';

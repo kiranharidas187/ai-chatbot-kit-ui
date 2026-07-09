@@ -10,4 +10,8 @@ export {
   Check as CheckIcon,
   X as XIcon,
   Loader2 as LoaderIcon,
+  Plus as PlusIcon,
+  PanelLeft as PanelLeftIcon,
+  Pencil as PencilIcon,
+  Trash2 as TrashIcon,
 } from 'lucide-react';
