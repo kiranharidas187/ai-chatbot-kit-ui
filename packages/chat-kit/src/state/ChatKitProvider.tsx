@@ -1,25 +1,85 @@
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useReducer,
+  useState,
+  type Dispatch,
+  type ReactNode,
+} from 'react';
 import { resolveConfig } from '../config/resolveConfig';
 import type { ChatKitConfig, ResolvedChatKitConfig } from '../config/types';
+import { resolveTransport } from '../transport/resolveTransport';
+import type { TransportAdapter } from '../transport/types';
+import { newId } from '../utils/newId';
+import { chatReducer, emptyChatState } from './chatReducer';
+import type { ChatAction, ChatState } from './types';
 
 const ConfigContext = createContext<ResolvedChatKitConfig | null>(null);
+
+interface ChatKitStore {
+  state: ChatState;
+  dispatch: Dispatch<ChatAction>;
+  transport: TransportAdapter;
+  /** In-flight turn controllers, keyed by session id. */
+  aborts: Map<string, AbortController>;
+}
+
+const StoreContext = createContext<ChatKitStore | null>(null);
 
 export interface ChatKitProviderProps {
   config?: ChatKitConfig;
   children: ReactNode;
 }
 
+function initialChatState(defaultTitle: string): ChatState {
+  const now = Date.now();
+  const session = { id: newId(), title: defaultTitle, createdAt: now, updatedAt: now };
+  return {
+    ...emptyChatState,
+    sessions: [session],
+    activeSessionId: session.id,
+    messagesBySession: { [session.id]: [] },
+  };
+}
+
 /**
  * Wrap your app (or the subtree hosting the chat UI) once. Holds the resolved
- * config; session/message state joins in M3.
+ * config plus all session/message state.
  */
 export function ChatKitProvider({ config, children }: ChatKitProviderProps) {
   const resolved = useMemo(() => resolveConfig(config), [config]);
-  return <ConfigContext.Provider value={resolved}>{children}</ConfigContext.Provider>;
+  const [state, dispatch] = useReducer(
+    chatReducer,
+    resolved.strings.emptySessionTitle,
+    initialChatState,
+  );
+  const transport = useMemo(() => resolveTransport(resolved.transport), [resolved.transport]);
+  const [aborts] = useState(() => new Map<string, AbortController>());
+
+  const store = useMemo<ChatKitStore>(
+    () => ({ state, dispatch, transport, aborts }),
+    [state, transport, aborts],
+  );
+
+  return (
+    <ConfigContext.Provider value={resolved}>
+      <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
+    </ConfigContext.Provider>
+  );
 }
 
 export function useChatKitConfig(): ResolvedChatKitConfig {
   const value = useContext(ConfigContext);
+  if (!value) {
+    throw new Error('ChatKit components must be rendered inside <ChatKitProvider>.');
+  }
+  return value;
+}
+
+/** Internal store access — not part of the public API. */
+export function useChatKitStore(): ChatKitStore {
+  const value = useContext(StoreContext);
   if (!value) {
     throw new Error('ChatKit components must be rendered inside <ChatKitProvider>.');
   }

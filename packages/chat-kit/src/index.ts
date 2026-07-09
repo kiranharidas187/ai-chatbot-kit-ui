@@ -8,10 +8,20 @@
 // Provider + hooks
 export { ChatKitProvider, useChatKitConfig } from './state/ChatKitProvider';
 export type { ChatKitProviderProps } from './state/ChatKitProvider';
+export { useChat } from './state/useChat';
+export type { UseChatResult } from './state/useChat';
 
 // Components
 export { ChatWindow } from './components/ChatWindow';
 export type { ChatWindowProps } from './components/ChatWindow';
+export { ChatMessages } from './components/messages/ChatMessages';
+export type { ChatMessagesProps } from './components/messages/ChatMessages';
+export { ChatComposer } from './components/composer/ChatComposer';
+export type { ChatComposerProps } from './components/composer/ChatComposer';
+
+// Built-in transports
+export { createEchoTransport } from './transport/echo';
+export type { EchoTransportOptions } from './transport/echo';
 
 // Config
 export { defineConfig } from './config/defineConfig';

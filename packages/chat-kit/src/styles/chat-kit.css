@@ -8,7 +8,7 @@
  * --ck-* custom property set at runtime by <ChatKitRoot> — that's what makes
  * runtime theme/mode switching work without a rebuild.
  */
-@layer theme, base, utilities;
+@layer theme, base, components, utilities;
 
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities) source(none);
@@ -88,5 +88,76 @@
   .ck-root svg {
     display: block;
     max-width: 100%;
+  }
+}
+
+@layer components {
+  /* Message enter animation; disabled for reduced-motion users. */
+  .ck-message-enter {
+    animation: ck-fade-up 0.25s ease-out;
+  }
+
+  /* Blinking caret shown at the end of streaming assistant text. */
+  .ck-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 1em;
+    margin-left: 0.1em;
+    vertical-align: text-bottom;
+    background-color: var(--ck-color-accent);
+    border-radius: 1px;
+    animation: ck-blink 1s steps(2, start) infinite;
+  }
+
+  .ck-typing-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: var(--ck-color-muted-foreground);
+    animation: ck-bounce 1.2s ease-in-out infinite;
+  }
+  .ck-typing-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .ck-typing-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ck-message-enter,
+    .ck-cursor,
+    .ck-typing-dot {
+      animation: none;
+    }
+  }
+}
+
+@keyframes ck-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ck-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes ck-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
   }
 }

@@ -1,6 +1,12 @@
-import { ChatKitProvider, ChatWindow, defineConfig, type ThemeMode } from '@kiranharidas/chat-kit';
+import {
+  ChatKitProvider,
+  ChatWindow,
+  defineConfig,
+  useChat,
+  type ThemeMode,
+} from '@kiranharidas/chat-kit';
 import '@kiranharidas/chat-kit/styles.css';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 const ACCENTS = {
   indigo: '#4f46e5',
@@ -16,7 +22,21 @@ function initialParam<T extends string>(key: string, valid: readonly T[], fallba
   return valid.includes(value as T) ? (value as T) : fallback;
 }
 
+/** Sends a message on mount via the public useChat hook — used by /?autosend=… for demos and smoke tests. */
+function AutoSend({ text }: { text: string }) {
+  const { sendMessage } = useChat();
+  const sent = useRef(false);
+  useEffect(() => {
+    if (!sent.current) {
+      sent.current = true;
+      sendMessage(text);
+    }
+  }, [text, sendMessage]);
+  return null;
+}
+
 export function App() {
+  const autosend = useMemo(() => new URLSearchParams(window.location.search).get('autosend'), []);
   const [mode, setMode] = useState<ThemeMode>(() =>
     initialParam('mode', ['light', 'dark', 'system'], 'system'),
   );
@@ -83,6 +103,7 @@ export function App() {
 
       <div style={{ flex: 1, minHeight: 0 }}>
         <ChatKitProvider config={config}>
+          {autosend && <AutoSend text={autosend} />}
           <ChatWindow />
         </ChatKitProvider>
       </div>

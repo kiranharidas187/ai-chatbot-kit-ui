@@ -9,7 +9,7 @@
 |---|-----------|--------|
 | M1 | Scaffold monorepo + continuity files | ✅ done |
 | M2 | Config types + theme system + CSS pipeline | ✅ done |
-| M3 | State layer + basic chat UI | ⬜ not started |
+| M3 | State layer + basic chat UI | ✅ done |
 | M4 | Transport adapters (SSE/WS/HTTP) + mock server | ⬜ not started |
 | M5 | Multi-session sidebar + persistence | ⬜ not started |
 | M6 | Markdown, tool-call/thinking rendering, message actions | ⬜ not started |
@@ -35,12 +35,24 @@
   Verify: `pnpm test` (12 tests), `pnpm dev` → http://localhost:5173/?mode=dark&accent=rose
   shows dark rose-accented shell; mode/accent switch live from the demo toolbar.
 
+- **M3 state layer + chat UI** — `chatReducer` (multi-session-ready), `runTurn` folds the
+  ChatEvent stream into actions (interleaved text/tool-call handling, abort keeps partial
+  text, thrown errors → retryable error message), `useChat` hook (send/stop/retry, session
+  auto-title from first message), echo transport fallback, ChatMessages (auto-scroll that
+  releases when user scrolls up), MessageBubble (user/assistant/system + error w/ retry),
+  ToolCallItem (compact; full view M6), ChatComposer (auto-grow, Enter sends, stop button),
+  typing dots + streaming caret + enter animations (reduced-motion aware).
+  Verify: `pnpm test` (33 tests); `pnpm dev` → send a message, watch the echoed reply
+  stream; `/?autosend=hi` auto-sends for smoke tests.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M3 — state layer (`src/state/`: reducer, actions,
-session/message state in ChatKitProvider), real ChatWindow (message list + composer,
-bubbles per role, auto-scroll with scroll-lock release), echo transport for the demo,
-reducer tests.
+Nothing mid-flight. **Next step:** start M4 — SSE/WebSocket/HTTP transports in
+`src/transport/` (sse.ts, websocket.ts, http.ts) with retry/backoff, wire into
+`resolveTransport` (currently throws for those modes), mock backend server for the demo
+(`apps/demo/server/` via `pnpm dev:server`), adapter unit tests with mocked
+streams/sockets. Gotchas already handled: tsup watch no longer cleans dist; root `pnpm dev`
+prebuilds the lib before starting watchers.
 
 ## Open questions / pending user input
 

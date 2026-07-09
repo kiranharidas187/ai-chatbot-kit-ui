@@ -7,7 +7,7 @@
     "node": ">=22.13"
   },
   "scripts": {
-    "dev": "pnpm --parallel -r dev",
+    "dev": "pnpm --filter @kiranharidas/chat-kit build && pnpm --parallel -r dev",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
