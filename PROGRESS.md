@@ -11,7 +11,7 @@
 | M2 | Config types + theme system + CSS pipeline | ✅ done |
 | M3 | State layer + basic chat UI | ✅ done |
 | M4 | Transport adapters (SSE/WS/HTTP) + mock server | ✅ done |
-| M5 | Multi-session sidebar + persistence | ⬜ not started |
+| M5 | Multi-session sidebar + persistence | ✅ done |
 | M6 | Markdown, tool-call/thinking rendering, message actions | ⬜ not started |
 | M7 | Mic / voice input | ⬜ not started |
 | M8 | A11y, responsive, polish | ⬜ not started |
@@ -55,12 +55,21 @@
   Verify: `pnpm test` (52 tests); `pnpm dev:server` + `pnpm dev` → toolbar transport
   select; `/?transport=sse&autosend=use a tool` shows the tool-call chip streaming.
 
+- **M5 sessions + persistence** — `localStoragePersistence` / `memoryPersistence`,
+  `usePersistenceSync` (hydrate once, debounced message saves, status sanitization on
+  save, empty sessions never persisted), `useSessions` (create/rename/delete/switch,
+  maxSessions eviction, lazy history load), collapsible `ChatSidebar` with inline rename
+  and two-step delete. Verify: `pnpm test` (63 tests); `pnpm dev` → chat, reload, session
+  restored; `/?seed=1` proves hydration in one load.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M5 — collapsible session sidebar
-(`src/components/sidebar/`), `useSessions` hook (new/rename/delete/switch),
-`PersistenceAdapter` implementations (`src/persistence/localStorage.ts`, `memory.ts`),
-provider loads sessions on mount + debounced saves, maxSessions cap, round-trip tests.
+Nothing mid-flight. **Next step:** start M6 — markdown rendering (react-markdown +
+remark-gfm + rehype-highlight, gated by `features.markdown`/`codeHighlighting`),
+expanded tool-call component (collapsible input/output), thinking disclosure on
+assistant messages, message actions (copy/regenerate/feedback per
+`features.messageActions`). Mock server already streams markdown + tool calls +
+thinking ("tool"/"think" prompts) for testing.
 
 ## Open questions / pending user input
 
