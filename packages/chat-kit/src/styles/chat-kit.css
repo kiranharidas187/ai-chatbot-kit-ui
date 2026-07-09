@@ -1,0 +1,92 @@
+/*
+ * ChatKit stylesheet — compiled by Tailwind v4 (@tailwindcss/cli) into
+ * dist/styles.css at build time. Consumers import
+ * '@kiranharidas/chat-kit/styles.css'; they do NOT need Tailwind.
+ *
+ * No global preflight ships from here: all resets are scoped under .ck-root so
+ * the library never leaks styles into a host app. Every design token is a
+ * --ck-* custom property set at runtime by <ChatKitRoot> — that's what makes
+ * runtime theme/mode switching work without a rebuild.
+ */
+@layer theme, base, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities) source(none);
+
+@source '../components';
+
+@theme inline {
+  /* Drop Tailwind's default palette: components must use semantic tokens. */
+  --color-*: initial;
+  --color-background: var(--ck-color-background);
+  --color-surface: var(--ck-color-surface);
+  --color-surface-hover: var(--ck-color-surface-hover);
+  --color-border: var(--ck-color-border);
+  --color-foreground: var(--ck-color-foreground);
+  --color-muted-foreground: var(--ck-color-muted-foreground);
+  --color-accent: var(--ck-color-accent);
+  --color-accent-foreground: var(--ck-color-accent-foreground);
+  --color-user-bubble: var(--ck-color-user-bubble);
+  --color-user-bubble-foreground: var(--ck-color-user-bubble-foreground);
+  --color-assistant-bubble: var(--ck-color-assistant-bubble);
+  --color-assistant-bubble-foreground: var(--ck-color-assistant-bubble-foreground);
+  --color-danger: var(--ck-color-danger);
+  --color-danger-foreground: var(--ck-color-danger-foreground);
+
+  --font-sans: var(--ck-font-sans);
+  --font-mono: var(--ck-font-mono);
+
+  --radius-sm: var(--ck-radius-sm);
+  --radius-md: var(--ck-radius-md);
+  --radius-lg: var(--ck-radius-lg);
+  --radius-bubble: var(--ck-radius-bubble);
+
+  /* All spacing utilities (p-*, gap-*, size-*, …) scale from the theme unit. */
+  --spacing: var(--ck-spacing-unit);
+}
+
+@layer base {
+  .ck-root {
+    box-sizing: border-box;
+    font-family: var(--ck-font-sans);
+    font-size: var(--ck-text-base);
+    line-height: 1.5;
+    color: var(--ck-color-foreground);
+    background-color: var(--ck-color-background);
+    -webkit-font-smoothing: antialiased;
+    text-size-adjust: 100%;
+  }
+
+  .ck-root *,
+  .ck-root *::before,
+  .ck-root *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Width utilities (border-b, …) pick up the token color automatically. */
+    border: 0 solid var(--ck-color-border);
+  }
+
+  .ck-root button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+  }
+
+  .ck-root button:disabled {
+    cursor: default;
+  }
+
+  .ck-root input,
+  .ck-root textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  .ck-root img,
+  .ck-root svg {
+    display: block;
+    max-width: 100%;
+  }
+}

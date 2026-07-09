@@ -8,7 +8,7 @@
 | # | Milestone | Status |
 |---|-----------|--------|
 | M1 | Scaffold monorepo + continuity files | ✅ done |
-| M2 | Config types + theme system + CSS pipeline | ⬜ not started |
+| M2 | Config types + theme system + CSS pipeline | ✅ done |
 | M3 | State layer + basic chat UI | ⬜ not started |
 | M4 | Transport adapters (SSE/WS/HTTP) + mock server | ⬜ not started |
 | M5 | Multi-session sidebar + persistence | ⬜ not started |
@@ -25,13 +25,22 @@
   Verify: `pnpm build && pnpm typecheck && pnpm lint && pnpm test` all green;
   `pnpm dev` serves http://localhost:5173 showing the ChatWindow placeholder.
 
+- **M2 config + theme + CSS pipeline** — full type surface for all adapters
+  (`src/transport/types.ts`, `src/persistence/types.ts`, `src/speech/types.ts`, core
+  domain in `src/types.ts`), `ChatKitConfig` defaults + deepMerge (`src/config/`),
+  theme→`--ck-*` vars resolver + system-mode tracking (`src/theme/`), Tailwind v4
+  compiled to `dist/styles.css` via tsup `onSuccess` (scoped reset, no preflight leak,
+  default palette wiped — components use semantic tokens only). ChatKitProvider carries
+  resolved config; ChatWindow is a themed static shell.
+  Verify: `pnpm test` (12 tests), `pnpm dev` → http://localhost:5173/?mode=dark&accent=rose
+  shows dark rose-accented shell; mode/accent switch live from the demo toolbar.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M2 — `ChatKitConfig` types/defaults/deep-merge in
-`packages/chat-kit/src/config/`, theme→CSS-vars resolver in `src/theme/`, Tailwind v4
-pipeline (`@tailwindcss/cli`) emitting `dist/styles.css`, vitest coverage for merge +
-resolution, demo themed shell with light/dark toggle. Note: when adding Tailwind, its
-native binary (`@tailwindcss/oxide`) must be allowed in `pnpm-workspace.yaml` `allowBuilds`.
+Nothing mid-flight. **Next step:** start M3 — state layer (`src/state/`: reducer, actions,
+session/message state in ChatKitProvider), real ChatWindow (message list + composer,
+bubbles per role, auto-scroll with scroll-lock release), echo transport for the demo,
+reducer tests.
 
 ## Open questions / pending user input
 
