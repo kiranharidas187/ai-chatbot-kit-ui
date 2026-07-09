@@ -54,7 +54,11 @@ export function ChatMessages({ className }: ChatMessagesProps) {
         <div className="mx-auto flex max-w-3xl flex-col gap-5 px-4 py-6">
           {messages.map((message) =>
             message.kind === 'text' ? (
-              <MessageBubble key={message.id} message={message} />
+              <MessageBubble
+                key={message.id}
+                message={message}
+                isLastAssistantMessage={message.id === last?.id && message.role === 'assistant'}
+              />
             ) : (
               <ToolCallItem key={message.id} message={message} />
             ),

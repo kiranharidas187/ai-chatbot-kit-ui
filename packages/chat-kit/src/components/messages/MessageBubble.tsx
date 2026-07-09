@@ -1,13 +1,21 @@
 import { useChatKitConfig } from '../../state/ChatKitProvider';
 import { useChat } from '../../state/useChat';
 import type { TextMessage } from '../../types';
+import { MarkdownContent } from './MarkdownContent';
+import { MessageActions } from './MessageActions';
+import { ThinkingDisclosure } from './ThinkingDisclosure';
 
 function StreamingCursor() {
   return <span className="ck-cursor" aria-hidden />;
 }
 
-export function MessageBubble({ message }: { message: TextMessage }) {
-  const { strings } = useChatKitConfig();
+export interface MessageBubbleProps {
+  message: TextMessage;
+  isLastAssistantMessage?: boolean;
+}
+
+export function MessageBubble({ message, isLastAssistantMessage = false }: MessageBubbleProps) {
+  const { strings, features } = useChatKitConfig();
   const { retry, isGenerating } = useChat();
 
   if (message.role === 'user') {
@@ -28,13 +36,23 @@ export function MessageBubble({ message }: { message: TextMessage }) {
     );
   }
 
-  // Assistant. Markdown rendering replaces the plain text in M6.
+  const streaming = message.status === 'streaming';
   return (
-    <div className="ck-message-enter">
-      {(message.content || message.status === 'streaming') && (
-        <div className="whitespace-pre-wrap leading-relaxed text-assistant-bubble-foreground">
-          {message.content}
-          {message.status === 'streaming' && <StreamingCursor />}
+    <div className="ck-message-enter group">
+      {message.thinking && (
+        <ThinkingDisclosure thinking={message.thinking} active={streaming && !message.content} />
+      )}
+      {(message.content || streaming) && (
+        <div className="text-assistant-bubble-foreground">
+          {features.markdown ? (
+            <MarkdownContent
+              content={message.content}
+              codeHighlighting={features.codeHighlighting}
+            />
+          ) : (
+            <div className="whitespace-pre-wrap leading-relaxed">{message.content}</div>
+          )}
+          {streaming && <StreamingCursor />}
         </div>
       )}
       {message.status === 'error' && (
@@ -51,6 +69,9 @@ export function MessageBubble({ message }: { message: TextMessage }) {
             </button>
           )}
         </div>
+      )}
+      {message.status === 'complete' && message.content && (
+        <MessageActions message={message} isLastAssistantMessage={isLastAssistantMessage} />
       )}
     </div>
   );

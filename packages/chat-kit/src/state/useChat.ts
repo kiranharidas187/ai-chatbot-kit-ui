@@ -15,6 +15,8 @@ export interface UseChatResult {
   stopGenerating: () => void;
   /** Retry after a failed turn: drops the errored answer and re-runs the last user message. */
   retry: () => void;
+  /** Regenerate the last assistant answer (same mechanics as retry). */
+  regenerate: () => void;
 }
 
 const NO_MESSAGES: Message[] = [];
@@ -96,5 +98,5 @@ export function useChat(): UseChatResult {
     startTurn(lastUser.content, messages.slice(0, lastUserIndex + 1));
   }, [sessionId, isGenerating, messages, dispatch, startTurn]);
 
-  return { messages, isGenerating, isTyping, sendMessage, stopGenerating, retry };
+  return { messages, isGenerating, isTyping, sendMessage, stopGenerating, retry, regenerate: retry };
 }

@@ -77,6 +77,8 @@ export function App() {
           light: { accent: ACCENTS[accent] },
           dark: { accent: ACCENTS[accent] },
         },
+        features: { messageActions: { feedback: true } },
+        onFeedback: (message, feedback) => console.log('[demo] feedback', feedback, message.id),
       });
     if (chosenTransport) base.transport = chosenTransport;
     return base;

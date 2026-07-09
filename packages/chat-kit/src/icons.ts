@@ -14,4 +14,9 @@ export {
   PanelLeft as PanelLeftIcon,
   Pencil as PencilIcon,
   Trash2 as TrashIcon,
+  Copy as CopyIcon,
+  RefreshCw as RefreshIcon,
+  ThumbsUp as ThumbsUpIcon,
+  ThumbsDown as ThumbsDownIcon,
+  ChevronRight as ChevronRightIcon,
 } from 'lucide-react';

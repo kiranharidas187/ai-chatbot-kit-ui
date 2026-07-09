@@ -3,6 +3,7 @@ import type { SpeechAdapter } from '../speech/types';
 import type { UIStrings } from '../strings';
 import type { ChatTheme, ResolvedTheme } from '../theme/types';
 import type { TransportConfig } from '../transport/types';
+import type { TextMessage } from '../types';
 
 export interface BrandingConfig {
   botName?: string;
@@ -50,6 +51,8 @@ export interface ChatKitConfig {
   sessions?: SessionsConfig;
   speech?: SpeechConfig;
   strings?: Partial<UIStrings>;
+  /** Called when the user rates an assistant message (requires `features.messageActions.feedback`). */
+  onFeedback?: (message: TextMessage, feedback: 'up' | 'down') => void;
 }
 
 /** Config after defaults are applied — what components consume via context. */
@@ -79,4 +82,5 @@ export interface ResolvedChatKitConfig {
     lang: string;
   };
   strings: UIStrings;
+  onFeedback?: (message: TextMessage, feedback: 'up' | 'down') => void;
 }
