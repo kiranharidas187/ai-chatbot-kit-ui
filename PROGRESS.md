@@ -14,8 +14,8 @@
 | M5 | Multi-session sidebar + persistence | ✅ done |
 | M6 | Markdown, tool-call/thinking rendering, message actions | ✅ done |
 | M7 | Mic / voice input | ✅ done |
-| M8 | A11y, responsive, polish | ⬜ not started |
-| M9 | Docs + packaging verification | ⬜ not started |
+| M8 | A11y, responsive, polish, attachments | ✅ done |
+| M9 | Docs + packaging verification | ✅ done |
 
 ## Done and confirmed working
 
@@ -76,13 +76,31 @@
   button with live transcript + pulsing recording ring. Verify: `pnpm test` (66 tests);
   `pnpm dev` in Chrome/Safari → mic button right of the textarea, click and dictate.
 
+- **M8 attachments + responsive + a11y** — composer paperclip/chips
+  (`features.attachments`), Attachment[] flows through sendMessage → transports
+  (metadata-only JSON via `defaultRequestBody`; blobs available to custom transports),
+  persistence strips blobs; container-query embedded mode (sidebar overlays + starts
+  collapsed + auto-closes in containers narrower than 672px); focus-visible outlines,
+  aria-busy, composer autofocus, Escape stops generation.
+  Verify: `pnpm dev` at narrow window → collapsed rail; attach a file and send.
+
+- **M9 docs + packaging** — README (root + package copy), `docs/architecture.md`,
+  `docs/config-reference.md`, `docs/custom-transport.md` (incl. LangGraph example +
+  built-in wire formats), `docs/custom-persistence.md`, `docs/theming.md` (2 example
+  themes, embedding guide). Packaging verified end-to-end: `pnpm pack` tarball installed
+  with **npm** into a scratch Vite app (react 19), `vite build` + preview rendered a
+  fully working themed ChatWindow. Recipe: pack → `npm i <tarball> react react-dom` →
+  import provider + ChatWindow + styles.css.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M8 — a11y/responsive/polish: keyboard nav +
-focus management (focus composer on session switch, focus trap not needed), ARIA audit
-(list roles, log region already present), responsive/embedded mode (container query:
-hide/overlay sidebar when narrow), composer attachments UI (`features.attachments` —
-paperclip → file chips → Attachment[] in OutgoingMessage), reduced-motion already done.
+Nothing mid-flight. **v1 is feature-complete** — all 9 milestones done, 67 tests green.
+
+**Candidate next steps (need user input on priority):**
+- Publish to npm (needs `npm login` as kiranharidas; consider CI + changesets)
+- Lazy-load highlight.js (consumer bundle ~500 kB pre-gzip with it inlined)
+- Real-backend integration example (LangGraph)
+- i18n via strings.ts seam
 
 ## Open questions / pending user input
 
