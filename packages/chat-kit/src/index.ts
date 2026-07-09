@@ -22,6 +22,12 @@ export type { ChatComposerProps } from './components/composer/ChatComposer';
 // Built-in transports
 export { createEchoTransport } from './transport/echo';
 export type { EchoTransportOptions } from './transport/echo';
+export { createSSETransport } from './transport/sse';
+export type { SSETransportOptions } from './transport/sse';
+export { createWebSocketTransport } from './transport/websocket';
+export type { WebSocketTransportOptions } from './transport/websocket';
+export { createHttpTransport } from './transport/http';
+export type { HttpTransportOptions } from './transport/http';
 
 // Config
 export { defineConfig } from './config/defineConfig';

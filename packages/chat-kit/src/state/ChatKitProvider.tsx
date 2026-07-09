@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
   useState,
@@ -61,6 +62,15 @@ export function ChatKitProvider({ config, children }: ChatKitProviderProps) {
     () => ({ state, dispatch, transport, aborts }),
     [state, transport, aborts],
   );
+
+  // Unsolicited server pushes (e.g. typing indicators over WebSocket).
+  useEffect(() => {
+    return transport.onServerEvent?.((sessionId, event) => {
+      if (event.type === 'typing') {
+        dispatch({ type: 'TYPING_SET', sessionId, active: event.active });
+      }
+    });
+  }, [transport]);
 
   return (
     <ConfigContext.Provider value={resolved}>

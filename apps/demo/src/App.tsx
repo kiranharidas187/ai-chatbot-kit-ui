@@ -16,6 +16,23 @@ const ACCENTS = {
 
 type AccentName = keyof typeof ACCENTS;
 
+const MOCK_SERVER = 'http://localhost:8787';
+const TRANSPORTS = ['echo', 'sse', 'websocket', 'http'] as const;
+type TransportName = (typeof TRANSPORTS)[number];
+
+function transportConfig(name: TransportName) {
+  switch (name) {
+    case 'echo':
+      return undefined; // library falls back to its built-in echo transport
+    case 'sse':
+      return { mode: 'sse', url: `${MOCK_SERVER}/api/chat/sse` } as const;
+    case 'websocket':
+      return { mode: 'websocket', url: 'ws://localhost:8787/api/chat/ws' } as const;
+    case 'http':
+      return { mode: 'http', url: `${MOCK_SERVER}/api/chat` } as const;
+  }
+}
+
 // Deep-linkable theme state, e.g. /?mode=dark&accent=rose
 function initialParam<T extends string>(key: string, valid: readonly T[], fallback: T): T {
   const value = new URLSearchParams(window.location.search).get(key);
@@ -43,22 +60,27 @@ export function App() {
   const [accent, setAccent] = useState<AccentName>(() =>
     initialParam('accent', ['indigo', 'emerald', 'rose'], 'indigo'),
   );
+  const [transport, setTransport] = useState<TransportName>(() =>
+    initialParam('transport', TRANSPORTS, 'echo'),
+  );
 
-  const config = useMemo(
-    () =>
-      defineConfig({
+  const config = useMemo(() => {
+    const chosenTransport = transportConfig(transport);
+    const base = defineConfig({
         branding: {
           botName: 'Orchestrator',
-          welcomeMessage: 'Hi! I am the ChatKit demo bot. Theme me from the toolbar above.',
+          welcomeMessage:
+            'Hi! I am the ChatKit demo bot. Pick a transport in the toolbar (sse/websocket/http need `pnpm dev:server`). Try messages containing “tool”, “think”, or “fail”.',
         },
         theme: {
           mode,
           light: { accent: ACCENTS[accent] },
           dark: { accent: ACCENTS[accent] },
         },
-      }),
-    [mode, accent],
-  );
+      });
+    if (chosenTransport) base.transport = chosenTransport;
+    return base;
+  }, [mode, accent, transport]);
 
   return (
     <div
@@ -93,6 +115,16 @@ export function App() {
           accent{' '}
           <select value={accent} onChange={(e) => setAccent(e.target.value as AccentName)}>
             {Object.keys(ACCENTS).map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          transport{' '}
+          <select value={transport} onChange={(e) => setTransport(e.target.value as TransportName)}>
+            {TRANSPORTS.map((name) => (
               <option key={name} value={name}>
                 {name}
               </option>

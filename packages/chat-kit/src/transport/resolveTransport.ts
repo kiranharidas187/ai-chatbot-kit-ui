@@ -1,5 +1,8 @@
 import { createEchoTransport } from './echo';
+import { createHttpTransport } from './http';
+import { createSSETransport } from './sse';
 import type { TransportAdapter, TransportConfig } from './types';
+import { createWebSocketTransport } from './websocket';
 
 let warnedNoTransport = false;
 
@@ -19,9 +22,24 @@ export function resolveTransport(config: TransportConfig | undefined): Transport
     case 'custom':
       return config.adapter;
     case 'sse':
+      return createSSETransport({
+        url: config.url,
+        ...(config.headers ? { headers: config.headers } : {}),
+        ...(config.withCredentials !== undefined
+          ? { withCredentials: config.withCredentials }
+          : {}),
+        ...(config.retry ? { retry: config.retry } : {}),
+      });
     case 'websocket':
+      return createWebSocketTransport({
+        url: config.url,
+        ...(config.protocols ? { protocols: config.protocols } : {}),
+        ...(config.reconnect ? { reconnect: config.reconnect } : {}),
+      });
     case 'http':
-      // Built-in network transports land in M4.
-      throw new Error(`[chat-kit] Transport mode '${config.mode}' is not implemented yet.`);
+      return createHttpTransport({
+        url: config.url,
+        ...(config.headers ? { headers: config.headers } : {}),
+      });
   }
 }

@@ -12,7 +12,8 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dev:server": "pnpm --filter demo dev:server"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

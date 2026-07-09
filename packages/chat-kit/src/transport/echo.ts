@@ -1,18 +1,5 @@
+import { sleep } from '../utils/sleep';
 import type { ChatEvent, TransportAdapter } from './types';
-
-function sleep(ms: number, signal: AbortSignal): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      signal.removeEventListener('abort', onAbort);
-      resolve();
-    }, ms);
-    const onAbort = () => {
-      clearTimeout(timer);
-      reject(signal.reason instanceof Error ? signal.reason : new DOMException('Aborted', 'AbortError'));
-    };
-    signal.addEventListener('abort', onAbort, { once: true });
-  });
-}
 
 export interface EchoTransportOptions {
   /** Delay between streamed words. */

@@ -10,7 +10,7 @@
 | M1 | Scaffold monorepo + continuity files | ✅ done |
 | M2 | Config types + theme system + CSS pipeline | ✅ done |
 | M3 | State layer + basic chat UI | ✅ done |
-| M4 | Transport adapters (SSE/WS/HTTP) + mock server | ⬜ not started |
+| M4 | Transport adapters (SSE/WS/HTTP) + mock server | ✅ done |
 | M5 | Multi-session sidebar + persistence | ⬜ not started |
 | M6 | Markdown, tool-call/thinking rendering, message actions | ⬜ not started |
 | M7 | Mic / voice input | ⬜ not started |
@@ -45,14 +45,22 @@
   Verify: `pnpm test` (33 tests); `pnpm dev` → send a message, watch the echoed reply
   stream; `/?autosend=hi` auto-sends for smoke tests.
 
+- **M4 transports** — `createSSETransport` (POST + ReadableStream SSE parse, retries with
+  backoff only before first event, [DONE] sentinel, `mapEvent` hook for custom backends),
+  `createWebSocketTransport` (lazy connect, reconnect w/ backoff, onServerEvent routing of
+  unsolicited typing events, per-session turn queues), `createHttpTransport` (single POST,
+  flexible response mapping). Provider subscribes to server typing pushes. Mock backend
+  `apps/demo/server/mock-server.mjs` (`pnpm dev:server`, port 8787) covers all three +
+  prompt tricks: "tool" → tool call, "think" → thinking deltas, "fail" → error event.
+  Verify: `pnpm test` (52 tests); `pnpm dev:server` + `pnpm dev` → toolbar transport
+  select; `/?transport=sse&autosend=use a tool` shows the tool-call chip streaming.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M4 — SSE/WebSocket/HTTP transports in
-`src/transport/` (sse.ts, websocket.ts, http.ts) with retry/backoff, wire into
-`resolveTransport` (currently throws for those modes), mock backend server for the demo
-(`apps/demo/server/` via `pnpm dev:server`), adapter unit tests with mocked
-streams/sockets. Gotchas already handled: tsup watch no longer cleans dist; root `pnpm dev`
-prebuilds the lib before starting watchers.
+Nothing mid-flight. **Next step:** start M5 — collapsible session sidebar
+(`src/components/sidebar/`), `useSessions` hook (new/rename/delete/switch),
+`PersistenceAdapter` implementations (`src/persistence/localStorage.ts`, `memory.ts`),
+provider loads sessions on mount + debounced saves, maxSessions cap, round-trip tests.
 
 ## Open questions / pending user input
 
