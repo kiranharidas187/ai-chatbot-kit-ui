@@ -1,3 +1,4 @@
+import { defaultRequestBody } from './serialize';
 import type { ChatEvent, OutgoingMessage, TransportAdapter } from './types';
 
 export interface HttpTransportOptions {
@@ -31,9 +32,7 @@ function defaultMapResponse(data: unknown): string | ChatEvent[] {
  */
 export function createHttpTransport(options: HttpTransportOptions): TransportAdapter {
   const mapResponse = options.mapResponse ?? defaultMapResponse;
-  const buildBody =
-    options.body ??
-    ((m: OutgoingMessage) => ({ sessionId: m.sessionId, message: m.content, history: m.history }));
+  const buildBody = options.body ?? defaultRequestBody;
 
   return {
     async *sendMessage(message, ctx): AsyncGenerator<ChatEvent> {

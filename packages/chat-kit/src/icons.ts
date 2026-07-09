@@ -20,4 +20,5 @@ export {
   ThumbsDown as ThumbsDownIcon,
   ChevronRight as ChevronRightIcon,
   Mic as MicIcon,
+  Paperclip as PaperclipIcon,
 } from 'lucide-react';

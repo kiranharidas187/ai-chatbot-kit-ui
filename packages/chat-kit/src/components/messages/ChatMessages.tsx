@@ -46,6 +46,7 @@ export function ChatMessages({ className }: ChatMessagesProps) {
       onScroll={onScroll}
       role="log"
       aria-live="polite"
+      aria-busy={isGenerating}
       className={cx('flex-1 overflow-y-auto', className)}
     >
       {messages.length === 0 ? (

@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react';
-import type { Message } from '../types';
+import type { Attachment, Message } from '../types';
 import type { TransportAdapter } from '../transport/types';
 import { newId } from '../utils/newId';
 import type { ChatAction } from './types';
@@ -9,6 +9,7 @@ export interface RunTurnOptions {
   dispatch: Dispatch<ChatAction>;
   sessionId: string;
   content: string;
+  attachments?: Attachment[];
   /** Session history including the user message that starts this turn. */
   history: Message[];
   headers: Record<string, string>;
@@ -23,8 +24,17 @@ export interface RunTurnOptions {
  * text message so following text starts a fresh one (agentic interleaving).
  */
 export async function runTurn(options: RunTurnOptions): Promise<void> {
-  const { transport, dispatch, sessionId, content, history, headers, signal, errorFallbackText } =
-    options;
+  const {
+    transport,
+    dispatch,
+    sessionId,
+    content,
+    attachments,
+    history,
+    headers,
+    signal,
+    errorFallbackText,
+  } = options;
 
   let currentTextId: string | null = null;
 
@@ -63,7 +73,7 @@ export async function runTurn(options: RunTurnOptions): Promise<void> {
 
   try {
     const stream = transport.sendMessage(
-      { sessionId, content, history },
+      { sessionId, content, history, ...(attachments ? { attachments } : {}) },
       { sessionId, signal, headers },
     );
 

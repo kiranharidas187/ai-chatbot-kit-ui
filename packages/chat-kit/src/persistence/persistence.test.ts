@@ -127,4 +127,20 @@ describe('sanitizeMessagesForSave', () => {
     const [result] = sanitizeMessagesForSave([settled]);
     expect(result).toBe(settled);
   });
+
+  it('drops attachment blobs but keeps their metadata', () => {
+    const withBlob: TextMessage = {
+      ...(message('a') as TextMessage),
+      attachments: [
+        { id: 'f1', name: 'notes.txt', mimeType: 'text/plain', size: 12, data: new Blob(['x']) },
+      ],
+    };
+    const [result] = sanitizeMessagesForSave([withBlob]) as TextMessage[];
+    expect(result?.attachments?.[0]).toEqual({
+      id: 'f1',
+      name: 'notes.txt',
+      mimeType: 'text/plain',
+      size: 12,
+    });
+  });
 });

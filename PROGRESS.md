@@ -13,7 +13,7 @@
 | M4 | Transport adapters (SSE/WS/HTTP) + mock server | ✅ done |
 | M5 | Multi-session sidebar + persistence | ✅ done |
 | M6 | Markdown, tool-call/thinking rendering, message actions | ✅ done |
-| M7 | Mic / voice input | ⬜ not started |
+| M7 | Mic / voice input | ✅ done |
 | M8 | A11y, responsive, polish | ⬜ not started |
 | M9 | Docs + packaging verification | ⬜ not started |
 
@@ -71,13 +71,18 @@
   renders code/table; `/?transport=sse&autosend=think and use a tool` shows thinking +
   tool chip.
 
+- **M7 voice input** — `webSpeechAdapter` (Web Speech API, full-transcript-per-event
+  contract, unsupported/SSR guarded, custom adapters via `speech.adapter`), composer mic
+  button with live transcript + pulsing recording ring. Verify: `pnpm test` (66 tests);
+  `pnpm dev` in Chrome/Safari → mic button right of the textarea, click and dictate.
+
 ## In progress
 
-Nothing mid-flight. **Next step:** start M7 — `WebSpeechAdapter` in `src/speech/`
-(webkitSpeechRecognition, isSupported guard), mic button in ChatComposer (pulse while
-recording, interim transcript into the textarea, hidden when unsupported/disabled),
-`features.mic` + `speech.adapter` config already typed. Note for M8 backlog: composer
-attachments UI (features.attachments) still unbuilt; keyboard/ARIA/responsive polish.
+Nothing mid-flight. **Next step:** start M8 — a11y/responsive/polish: keyboard nav +
+focus management (focus composer on session switch, focus trap not needed), ARIA audit
+(list roles, log region already present), responsive/embedded mode (container query:
+hide/overlay sidebar when narrow), composer attachments UI (`features.attachments` —
+paperclip → file chips → Attachment[] in OutgoingMessage), reduced-motion already done.
 
 ## Open questions / pending user input
 

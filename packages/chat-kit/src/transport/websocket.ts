@@ -1,5 +1,6 @@
 import { sleep } from '../utils/sleep';
 import { backoffDelay, DEFAULT_RETRY } from './backoff';
+import { defaultRequestBody } from './serialize';
 import type { ChatEvent, OutgoingMessage, RetryPolicy, TransportAdapter } from './types';
 
 export interface WebSocketTransportOptions {
@@ -54,13 +55,7 @@ export function createWebSocketTransport(options: WebSocketTransportOptions): Tr
   const reconnect: RetryPolicy = { ...DEFAULT_RETRY, ...options.reconnect };
   const mapEvent = options.mapEvent ?? defaultMapEvent;
   const buildMessage =
-    options.buildMessage ??
-    ((m: OutgoingMessage) => ({
-      type: 'message',
-      sessionId: m.sessionId,
-      message: m.content,
-      history: m.history,
-    }));
+    options.buildMessage ?? ((m: OutgoingMessage) => ({ type: 'message', ...defaultRequestBody(m) }));
 
   let socket: WebSocket | null = null;
   let openPromise: Promise<void> | null = null;

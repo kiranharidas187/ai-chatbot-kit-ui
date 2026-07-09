@@ -19,6 +19,8 @@ export interface TextMessage {
   id: string;
   role: MessageRole;
   content: string;
+  /** Files the user attached to this message (requires `features.attachments`). */
+  attachments?: Attachment[];
   /**
    * Intermediate reasoning streamed by agentic backends, rendered as a
    * collapsible block above the answer.

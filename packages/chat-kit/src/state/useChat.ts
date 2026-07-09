@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import type { Message, TextMessage } from '../types';
+import type { Attachment, Message, TextMessage } from '../types';
 import { newId } from '../utils/newId';
 import { useChatKitConfig, useChatKitStore } from './ChatKitProvider';
 import { runTurn } from './runTurn';
@@ -11,7 +11,7 @@ export interface UseChatResult {
   isGenerating: boolean;
   /** Server-driven typing indicator for the active session. */
   isTyping: boolean;
-  sendMessage: (content: string) => void;
+  sendMessage: (content: string, options?: { attachments?: Attachment[] }) => void;
   stopGenerating: () => void;
   /** Retry after a failed turn: drops the errored answer and re-runs the last user message. */
   retry: () => void;
@@ -37,7 +37,7 @@ export function useChat(): UseChatResult {
   }, [config.transport]);
 
   const startTurn = useCallback(
-    (content: string, history: Message[]) => {
+    (content: string, history: Message[], attachments?: Attachment[]) => {
       if (!sessionId) return;
       dispatch({ type: 'TURN_STARTED', sessionId });
       const controller = new AbortController();
@@ -48,6 +48,7 @@ export function useChat(): UseChatResult {
         sessionId,
         content,
         history,
+        ...(attachments && attachments.length > 0 ? { attachments } : {}),
         headers,
         signal: controller.signal,
         errorFallbackText: config.strings.errorGeneric,
@@ -59,15 +60,17 @@ export function useChat(): UseChatResult {
   );
 
   const sendMessage = useCallback(
-    (content: string) => {
+    (content: string, options?: { attachments?: Attachment[] }) => {
       const trimmed = content.trim();
-      if (!trimmed || !sessionId || isGenerating) return;
+      const attachments = options?.attachments?.filter(Boolean) ?? [];
+      if ((!trimmed && attachments.length === 0) || !sessionId || isGenerating) return;
 
       const userMessage: TextMessage = {
         kind: 'text',
         id: newId(),
         role: 'user',
         content: trimmed,
+        ...(attachments.length > 0 ? { attachments } : {}),
         status: 'complete',
         createdAt: Date.now(),
       };
@@ -75,10 +78,11 @@ export function useChat(): UseChatResult {
 
       // First message titles the session, ChatGPT-style.
       if (messages.length === 0) {
-        dispatch({ type: 'SESSION_RENAMED', sessionId, title: trimmed.slice(0, 40) });
+        const title = trimmed || attachments[0]?.name || 'Attachment';
+        dispatch({ type: 'SESSION_RENAMED', sessionId, title: title.slice(0, 40) });
       }
 
-      startTurn(trimmed, [...messages, userMessage]);
+      startTurn(trimmed, [...messages, userMessage], attachments);
     },
     [sessionId, isGenerating, dispatch, messages, startTurn],
   );

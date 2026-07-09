@@ -48,6 +48,11 @@
 @layer base {
   .ck-root {
     box-sizing: border-box;
+    position: relative;
+    /* Container queries: components adapt to the ChatKit container's width,
+       not the viewport, so embedding in a narrow panel just works. */
+    container-type: inline-size;
+    container-name: ck-root;
     font-family: var(--ck-font-sans);
     font-size: var(--ck-text-base);
     line-height: 1.5;
@@ -55,6 +60,11 @@
     background-color: var(--ck-color-background);
     -webkit-font-smoothing: antialiased;
     text-size-adjust: 100%;
+  }
+
+  .ck-root :focus-visible {
+    outline: 2px solid var(--ck-color-accent);
+    outline-offset: 1px;
   }
 
   .ck-root *,

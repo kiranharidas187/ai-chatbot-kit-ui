@@ -1,3 +1,4 @@
+import { PaperclipIcon } from '../../icons';
 import { useChatKitConfig } from '../../state/ChatKitProvider';
 import { useChat } from '../../state/useChat';
 import type { TextMessage } from '../../types';
@@ -21,8 +22,18 @@ export function MessageBubble({ message, isLastAssistantMessage = false }: Messa
   if (message.role === 'user') {
     return (
       <div className="ck-message-enter flex justify-end">
-        <div className="max-w-[85%] whitespace-pre-wrap rounded-bubble bg-user-bubble px-4 py-2.5 text-user-bubble-foreground">
-          {message.content}
+        <div className="max-w-[85%] rounded-bubble bg-user-bubble px-4 py-2.5 text-user-bubble-foreground">
+          {message.attachments && message.attachments.length > 0 && (
+            <ul className={message.content ? 'mb-1.5 space-y-1' : 'space-y-1'}>
+              {message.attachments.map((attachment) => (
+                <li key={attachment.id} className="flex items-center gap-1.5 text-sm opacity-80">
+                  <PaperclipIcon className="size-3.5 shrink-0" aria-hidden />
+                  <span className="truncate">{attachment.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {message.content && <div className="whitespace-pre-wrap">{message.content}</div>}
         </div>
       </div>
     );

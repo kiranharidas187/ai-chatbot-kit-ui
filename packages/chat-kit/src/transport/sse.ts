@@ -1,5 +1,6 @@
 import { sleep } from '../utils/sleep';
 import { backoffDelay, DEFAULT_RETRY } from './backoff';
+import { defaultRequestBody } from './serialize';
 import type { ChatEvent, OutgoingMessage, RetryPolicy, TransportAdapter } from './types';
 
 export interface SSETransportOptions {
@@ -66,9 +67,7 @@ function defaultMapEvent(data: unknown): ChatEvent | null {
 export function createSSETransport(options: SSETransportOptions): TransportAdapter {
   const retry: RetryPolicy = { ...DEFAULT_RETRY, ...options.retry };
   const mapEvent = options.mapEvent ?? defaultMapEvent;
-  const buildBody =
-    options.body ??
-    ((m: OutgoingMessage) => ({ sessionId: m.sessionId, message: m.content, history: m.history }));
+  const buildBody = options.body ?? defaultRequestBody;
 
   return {
     async *sendMessage(message, ctx): AsyncGenerator<ChatEvent> {

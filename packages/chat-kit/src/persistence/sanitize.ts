@@ -10,14 +10,22 @@ export function sanitizeMessagesForSave(messages: Message[]): Message[] {
     if (message.kind === 'tool-call') {
       return message.status === 'running' ? { ...message, status: 'error' as const } : message;
     }
-    if (message.status === 'streaming') return { ...message, status: 'complete' as const };
-    if (message.status === 'pending') {
+    let result = message;
+    // Blobs don't survive JSON storage; keep attachment metadata only.
+    if (result.attachments?.some((a) => a.data !== undefined)) {
+      result = {
+        ...result,
+        attachments: result.attachments.map(({ data: _data, ...meta }) => meta),
+      };
+    }
+    if (result.status === 'streaming') return { ...result, status: 'complete' as const };
+    if (result.status === 'pending') {
       return {
-        ...message,
+        ...result,
         status: 'error' as const,
         error: { message: 'Interrupted before completion.', retryable: true },
       };
     }
-    return message;
+    return result;
   });
 }
