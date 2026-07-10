@@ -1,5 +1,9 @@
 # @kiranharidas/chat-kit
 
+[![CI](https://github.com/kiranharidas187/ai-chatbot-kit-ui/actions/workflows/ci.yml/badge.svg)](https://github.com/kiranharidas187/ai-chatbot-kit-ui/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/LICENSE)
+[![React 18 | 19](https://img.shields.io/badge/React-18%20%7C%2019-61dafb.svg)](https://react.dev)
+
 A config-driven React chatbot UI component library. Drop a ChatGPT/Claude-quality chat
 interface into any React app and point it at any backend — SSE streaming, WebSocket,
 plain HTTP, or your own custom transport (LangGraph, agent orchestrators, RAG services).
@@ -22,7 +26,8 @@ plain HTTP, or your own custom transport (LangGraph, agent orchestrators, RAG se
 - ♿ **Accessible & responsive** — keyboard nav, ARIA, reduced-motion, container-query
   layout that adapts to embedded panels
 
-> 🚧 Not yet published to npm — develop against the demo app for now (see below).
+> 🚧 Not yet published to npm — try it today via the [local tarball example](#try-it-without-npm-publish)
+> or develop against the demo app (see below).
 
 ## Quickstart
 
@@ -73,13 +78,29 @@ pieces inside the provider: `ChatSidebar`, `ChatMessages`, `ChatComposer`, plus 
 
 ## Documentation
 
-| Guide | What's in it |
-|---|---|
-| [Architecture](docs/architecture.md) | Folder structure, the transport/state/persistence/theme layers, data flow |
-| [Config reference](docs/config-reference.md) | Every option, type, and default |
-| [Custom transports](docs/custom-transport.md) | `TransportAdapter` + `ChatEvent`, wiring a LangGraph/custom backend |
-| [Custom persistence](docs/custom-persistence.md) | `PersistenceAdapter`, syncing sessions to your own API/DB |
-| [Theming](docs/theming.md) | Token system, example themes, runtime switching, embedding |
+| Guide                                                                                                           | What's in it                                                              |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [Architecture](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/docs/architecture.md)             | Folder structure, the transport/state/persistence/theme layers, data flow |
+| [Config reference](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/docs/config-reference.md)     | Every option, type, and default                                           |
+| [Custom transports](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/docs/custom-transport.md)    | `TransportAdapter` + `ChatEvent`, wiring a LangGraph/custom backend       |
+| [Custom persistence](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/docs/custom-persistence.md) | `PersistenceAdapter`, syncing sessions to your own API/DB                 |
+| [Theming](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/docs/theming.md)                       | Token system, example themes, runtime switching, embedding                |
+
+## Try it without npm publish
+
+`examples/local-consumer` is a standalone Vite + React page that installs the library
+from a **locally packed tarball** — the exact artifact `npm publish` would upload — and
+renders `ChatWindow` against the built-in echo transport:
+
+```bash
+pnpm example                     # builds the lib, packs it, npm-installs into the example
+cd examples/local-consumer
+npm run dev                      # http://localhost:5173
+```
+
+Because it installs the pack output with npm outside the workspace, it exercises the
+`files` allowlist, `exports` map, `./styles.css` subpath, and type declarations exactly
+as a published install would.
 
 ## Local development
 
@@ -104,11 +125,18 @@ In the demo, try messages containing **"tool"** (simulated tool call), **"think"
 ## Repo layout
 
 ```
-packages/chat-kit   the publishable library (src/index.ts = public API)
-apps/demo           Vite playground + mock backend server
-docs/               consumer guides
+packages/chat-kit        the publishable library (src/index.ts = public API)
+apps/demo                Vite playground + mock backend server
+examples/local-consumer  npm-installs the packed tarball (packaging check, no publish)
+docs/                    consumer guides
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/CONTRIBUTING.md)
+for dev setup, conventions, and the PR checklist. Changes are tracked in the
+[changelog](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/packages/chat-kit/CHANGELOG.md).
 
 ## License
 
-MIT
+[MIT](https://github.com/kiranharidas187/ai-chatbot-kit-ui/blob/main/LICENSE) © Kiran Haridas

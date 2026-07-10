@@ -32,8 +32,22 @@ pnpm workspace monorepo:
   prompt triggers). Demo URL params: `?mode=`, `?accent=`, `?transport=`,
   `?autosend=<msg>` (auto-send for smoke tests), `?seed=1` (plants localStorage session
   to test hydration).
+- `examples/local-consumer/` — Vite + React page that consumes the **packed tarball**
+  via npm. Deliberately OUTSIDE the pnpm workspace globs so `npm install` resolves the
+  real pack output (`files`/`exports`/styles.css), not a workspace link. Bootstrap with
+  `pnpm example` (runs `setup.mjs`: lib build → `pnpm pack --out chat-kit-local.tgz` →
+  npm install; re-run after library changes). Its `package-lock.json` is gitignored —
+  setup regenerates it every run. Supports `?autosend=` like the demo.
 - `docs/` — consumer guides: architecture, config-reference, custom-transport,
   custom-persistence, theming.
+
+Repo hygiene files exist and should be kept current: root `LICENSE` (mirrored in
+`packages/chat-kit/LICENSE`), `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md`,
+`.editorconfig`, `.github/` (CI workflow + issue/PR templates), and
+`packages/chat-kit/CHANGELOG.md` (Keep-a-Changelog; add user-facing changes under
+`## [Unreleased]`). Version lives in three places that must move together:
+`packages/chat-kit/package.json`, the `VERSION` constant in `src/index.ts`, and the
+changelog.
 
 `packages/chat-kit/src/`: `config/` (ChatKitConfig, defaults, deepMerge) · `theme/`
 (tokens → `--ck-*` vars on `.ck-root`, never `:root`) · `transport/` (TransportAdapter +
@@ -74,8 +88,9 @@ All from repo root (remember the Node 26 PATH export):
 - `pnpm test` — vitest, 67 tests (reducer, runTurn, SSE parse/retry, WS lifecycle,
   persistence, speech)
 - `pnpm build` / `pnpm typecheck` / `pnpm lint` / `pnpm format`
-- Packaging check: `cd packages/chat-kit && pnpm pack` → install tarball in a scratch
-  Vite app (see PROGRESS.md M9 for the verified recipe)
+- Packaging check: `pnpm example` → then `cd examples/local-consumer && npm run dev`
+  (or `npm run build && npm run preview`). This replaced the scratch-app recipe from
+  PROGRESS.md M9 — the example app is that recipe, checked in.
 
 ## Conventions
 
@@ -100,7 +115,9 @@ All from repo root (remember the Node 26 PATH export):
 
 - highlight.js makes consumer bundles ~500 kB pre-gzip — consider lazy-loading
   rehype-highlight when `codeHighlighting` enabled.
-- npm publish CI + changesets; i18n (strings.ts is the seam); attachment upload helpers.
+- npm publish workflow + changesets (build/test/lint CI exists at
+  `.github/workflows/ci.yml`; the publish step itself is still future); i18n
+  (strings.ts is the seam); attachment upload helpers.
 
 ## Out of scope for v1
 

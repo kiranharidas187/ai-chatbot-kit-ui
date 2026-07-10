@@ -5,17 +5,18 @@
 
 ## Milestone status
 
-| # | Milestone | Status |
-|---|-----------|--------|
-| M1 | Scaffold monorepo + continuity files | ✅ done |
-| M2 | Config types + theme system + CSS pipeline | ✅ done |
-| M3 | State layer + basic chat UI | ✅ done |
-| M4 | Transport adapters (SSE/WS/HTTP) + mock server | ✅ done |
-| M5 | Multi-session sidebar + persistence | ✅ done |
-| M6 | Markdown, tool-call/thinking rendering, message actions | ✅ done |
-| M7 | Mic / voice input | ✅ done |
-| M8 | A11y, responsive, polish, attachments | ✅ done |
-| M9 | Docs + packaging verification | ✅ done |
+| #   | Milestone                                                        | Status  |
+| --- | ---------------------------------------------------------------- | ------- |
+| M1  | Scaffold monorepo + continuity files                             | ✅ done |
+| M2  | Config types + theme system + CSS pipeline                       | ✅ done |
+| M3  | State layer + basic chat UI                                      | ✅ done |
+| M4  | Transport adapters (SSE/WS/HTTP) + mock server                   | ✅ done |
+| M5  | Multi-session sidebar + persistence                              | ✅ done |
+| M6  | Markdown, tool-call/thinking rendering, message actions          | ✅ done |
+| M7  | Mic / voice input                                                | ✅ done |
+| M8  | A11y, responsive, polish, attachments                            | ✅ done |
+| M9  | Docs + packaging verification                                    | ✅ done |
+| M10 | Local-consumer example app + repo hygiene (LICENSE/CI/templates) | ✅ done |
 
 ## Done and confirmed working
 
@@ -92,12 +93,30 @@
   fully working themed ChatWindow. Recipe: pack → `npm i <tarball> react react-dom` →
   import provider + ChatWindow + styles.css.
 
+- **M10 example app + repo hygiene (2026-07-10)** — `examples/local-consumer/`: Vite +
+  React page outside the pnpm workspace that installs the **packed tarball** with npm
+  (`pnpm example` → `setup.mjs` builds, `pnpm pack --out chat-kit-local.tgz`, cleans
+  stale install/lockfile, `npm install`); renders ChatWindow on echo transport with
+  `?autosend=` smoke-test support — this is the M9 scratch-app recipe, checked in.
+  Repo hygiene modeled on well-run npm libraries: root+package `LICENSE` (MIT),
+  `packages/chat-kit/CHANGELOG.md` (Keep-a-Changelog, in `files`), `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md` (Covenant 2.1), `SECURITY.md`, `.editorconfig`,
+  `.github/workflows/ci.yml` (install→build→test→typecheck→lint→pack on Node from
+  `.nvmrc`), issue forms + PR template. package.json gained
+  repository/homepage/bugs/author/engines; version bumped **0.0.0 → 0.1.0** (three
+  places: package.json, `VERSION` in src/index.ts, changelog). READMEs: badges,
+  "Try it without npm publish" section, absolute GitHub doc links (render on npm).
+  Verify: `pnpm example` then `cd examples/local-consumer && npm run dev` (or
+  `npm run build && npm run preview`) → themed ChatWindow, echo replies.
+
 ## In progress
 
 Nothing mid-flight. **v1 is feature-complete** — all 9 milestones done, 67 tests green.
 
 **Candidate next steps (need user input on priority):**
-- Publish to npm (needs `npm login` as kiranharidas; consider CI + changesets)
+
+- Publish to npm (needs `npm login` as kiranharidas; build/test CI now exists — add a
+  publish workflow + changesets)
 - Lazy-load highlight.js (consumer bundle ~500 kB pre-gzip with it inlined)
 - Real-backend integration example (LangGraph)
 - i18n via strings.ts seam
