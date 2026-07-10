@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an idea or improvement for @kiranharidas/chat-kit
+title: 'feat: '
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that the library doesn't support today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: >
+        How should it work? If it touches the public API, sketch the config option or
+        exported function you'd expect.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you've tried (custom transport/persistence adapters, composing the exported components, etc.)

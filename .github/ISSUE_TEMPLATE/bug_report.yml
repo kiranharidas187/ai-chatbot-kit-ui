@@ -1,0 +1,42 @@
+name: Bug report
+description: Something in @kiranharidas/chat-kit doesn't work as documented
+title: 'bug: '
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: >
+        Minimal steps or code to reproduce — ideally a `defineConfig({...})` snippet
+        plus the transport mode you're using. A StackBlitz/CodeSandbox link is even
+        better.
+      render: tsx
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: chat-kit version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: React 19, Vite 8, Chrome 138, macOS
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output / stack trace
+      render: shell

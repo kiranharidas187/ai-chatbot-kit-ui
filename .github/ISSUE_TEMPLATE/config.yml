@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/kiranharidas187/ai-chatbot-kit-ui/tree/main/docs
+    about: Consumer guides — architecture, config reference, custom transports/persistence, theming.
+  - name: Security vulnerability
+    url: https://github.com/kiranharidas187/ai-chatbot-kit-ui/security/advisories/new
+    about: Please report security issues privately, not as public issues.
