@@ -95,4 +95,4 @@ export type {
 // Strings
 export type { UIStrings } from './strings';
 
-export const VERSION = '0.0.0';
+export const VERSION = '0.1.0';

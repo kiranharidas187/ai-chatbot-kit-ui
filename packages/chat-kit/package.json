@@ -1,14 +1,28 @@
 {
   "name": "@kiranharidas/chat-kit",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Config-driven React chatbot UI component library: pluggable transports (SSE/WebSocket/HTTP), multi-session, themeable via design tokens.",
   "license": "MIT",
+  "author": "Kiran Haridas <kiranharidas187@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiranharidas187/ai-chatbot-kit-ui.git",
+    "directory": "packages/chat-kit"
+  },
+  "homepage": "https://github.com/kiranharidas187/ai-chatbot-kit-ui#readme",
+  "bugs": {
+    "url": "https://github.com/kiranharidas187/ai-chatbot-kit-ui/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "CHANGELOG.md"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
