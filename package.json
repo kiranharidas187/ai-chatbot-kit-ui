@@ -13,7 +13,8 @@
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "dev:server": "pnpm --filter demo dev:server"
+    "dev:server": "pnpm --filter demo dev:server",
+    "example": "node examples/local-consumer/setup.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
