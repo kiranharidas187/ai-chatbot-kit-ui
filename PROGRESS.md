@@ -111,12 +111,18 @@
 
 ## In progress
 
-Nothing mid-flight. **v1 is feature-complete** — all 9 milestones done, 67 tests green.
+Nothing mid-flight. **v1 is feature-complete and published.**
+
+- **Published to npm (2026-07-11)** — `@kiranharidas/chat-kit@0.1.0` is live on the npm
+  registry, tagged `v0.1.0` on GitHub. Required creating the `kiranharidas` npm org first
+  (the `@kiranharidas` scope wasn't claimed under the `kiranharidas187` account) and a
+  Granular Access Token (account had no 2FA configured, and npm requires either OTP or a
+  token with write access to publish). Verify: `npm view @kiranharidas/chat-kit`.
 
 **Candidate next steps (need user input on priority):**
 
-- Publish to npm (needs `npm login` as kiranharidas; build/test CI now exists — add a
-  publish workflow + changesets)
+- Publish workflow + changesets for future releases (CI build/test/lint/pack already
+  exists at `.github/workflows/ci.yml`; publish step is manual today via the token above)
 - Lazy-load highlight.js (consumer bundle ~500 kB pre-gzip with it inlined)
 - Real-backend integration example (LangGraph)
 - i18n via strings.ts seam
