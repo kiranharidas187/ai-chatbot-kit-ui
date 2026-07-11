@@ -17,7 +17,12 @@ A reusable, config-driven React chatbot UI intended for npm as
 **`@kiranharidas/chat-kit`**, for use across AI agent projects (LangGraph orchestration
 bots, agentic bots, RAG assistants). UI/client only — no backend, no auth (consumers
 pass tokens/headers via config). **v1 feature-complete: all 9 milestones done** (see
-PROGRESS.md). Not yet published to npm.
+PROGRESS.md). **Published to npm as `@kiranharidas/chat-kit@0.1.0`** — publishing is
+scoped under the `kiranharidas` npm org (created separately from the `kiranharidas187`
+user account); releases publish via `.github/workflows/publish.yml` on `v*.*.*` tags
+using the `NPM_TOKEN` repo secret (a granular access token), or manually with
+`npm publish --access public` from `packages/chat-kit` for a maintainer logged in with
+2FA/OTP.
 
 ## Repo layout
 
@@ -115,10 +120,10 @@ All from repo root (remember the Node 26 PATH export):
 
 - highlight.js makes consumer bundles ~500 kB pre-gzip — consider lazy-loading
   rehype-highlight when `codeHighlighting` enabled.
-- npm publish workflow + changesets (build/test/lint CI exists at
-  `.github/workflows/ci.yml`; the publish step itself is still future); i18n
-  (strings.ts is the seam); attachment upload helpers.
+- changesets for version bumping/changelog automation (publish itself is now automated —
+  see `.github/workflows/publish.yml`); i18n (strings.ts is the seam); attachment upload
+  helpers.
 
 ## Out of scope for v1
 
-Backend/agent implementation, auth, i18n, npm publish CI, changesets, Storybook.
+Backend/agent implementation, auth, i18n, changesets, Storybook.

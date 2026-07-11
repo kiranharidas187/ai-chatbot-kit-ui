@@ -119,10 +119,19 @@ Nothing mid-flight. **v1 is feature-complete and published.**
   Granular Access Token (account had no 2FA configured, and npm requires either OTP or a
   token with write access to publish). Verify: `npm view @kiranharidas/chat-kit`.
 
+- **Publish workflow (2026-07-11)** — `.github/workflows/publish.yml`: triggers on
+  `v*.*.*` tags, reruns build/test/typecheck/lint, verifies the tag matches
+  `packages/chat-kit/package.json`'s version, then `npm publish --access public
+  --provenance` using the `NPM_TOKEN` repo secret (the granular access token created
+  above; still needs to be added at GitHub → repo Settings → Secrets and variables →
+  Actions → New repository secret, name `NPM_TOKEN`). Future releases: bump version in
+  the three tracked places, commit, `git tag vX.Y.Z && git push origin vX.Y.Z` — CI
+  publishes automatically.
+
 **Candidate next steps (need user input on priority):**
 
-- Publish workflow + changesets for future releases (CI build/test/lint/pack already
-  exists at `.github/workflows/ci.yml`; publish step is manual today via the token above)
+- Add the `NPM_TOKEN` secret to GitHub so `publish.yml` can actually run (see above)
+- changesets for version bumping/changelog automation
 - Lazy-load highlight.js (consumer bundle ~500 kB pre-gzip with it inlined)
 - Real-backend integration example (LangGraph)
 - i18n via strings.ts seam
